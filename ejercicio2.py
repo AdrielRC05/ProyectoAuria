@@ -5,14 +5,24 @@ import numpy
 
 class NodeState(Struct):
     nombre: str= ""
-    lado1: float= 0.0
-    lado2: float= 0.0
+    x: float= 0.0
+    y: float= 0.0
+
+class Trazada(Struct):
+    nombre: str
+    listaPuntos: list[list[float]]
 
 arrayPuntos= []
 
 @subscribe("datosCono", message_type= NodeState)
 async def recibirDatos(msg= NodeState):
-    puntoMedio= (msg.lado1+msg.lado2)/2
-    arrayPuntos.append(puntoMedio)
+    if(msg.nombre!= "FIN"):
+        arrayPuntos.append([msg.x, msg.y])
+    else:
+        listCoordX= numpy.unique(arrayPuntos[:,0])
+                    
+                
+        trazada= numpy.array(arrayPuntos)
+        trazada= trazada.tolist()
 
 
