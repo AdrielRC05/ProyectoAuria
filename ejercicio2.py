@@ -34,6 +34,10 @@ async def recibirDatos(msg= NodeState):
             ptoMedio= ptoMedio/2
             conoAEnviar= NodeState2(x, ptoMedio)
             await publish("Trazada",conoAEnviar)
-            
+            print("Enviando x2...")
 
+async def iniciar():
+    await start()
 
+if __name__ == "__main__":
+    asyncio.run(iniciar())

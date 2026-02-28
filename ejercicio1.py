@@ -19,11 +19,27 @@ class NodeState(Struct):
 # el csv es estático, lo dejo así
 
 async def leerEnviarCsv():
+    
+    while True:
+        try:
+            await publish("comprobacion", NodeState(nombre="test"))
+            break
+        except AttributeError:
+            await asyncio.sleep(0.5)
+
     with open("csv/acceleration.csv", mode="r", encoding="utf-8") as csv:
         for linea in csv:
             linea= linea.strip()
             linea= linea.split(",")
             datosAEnviar= NodeState(nombre= linea[0], x= float(linea[1]), y= float(linea[2]))
             await publish("datosConos", datosAEnviar)
+            print("Enviando...")
         datosAEnviar= NodeState(nombre= "FIN", x= 0, y= 0)
         await publish("datosConos", datosAEnviar)
+
+async def iniciar():
+    asyncio.create_task(leerEnviarCsv())
+    await start()
+
+if __name__ == "__main__":
+    asyncio.run(iniciar())
