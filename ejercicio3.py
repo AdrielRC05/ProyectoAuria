@@ -16,7 +16,7 @@ class NodeState(Struct):
     y: float= 0.0
 
 class NodeState2(Struct):
-    x: float= 0.0
+    ptoMedioX: float= 0.0
     ptoMedioY: float= 0.0
 
 conosAzules= []
@@ -56,7 +56,7 @@ async def leerConos(msg= NodeState):
 # Esta función lee el segundo topic y guarda los datos de la trazada
 @subscribe("Trazada",message_type= NodeState2)
 async def leerTrazada(msg= NodeState2):
-    puntosTrazada.append([msg.x, msg.ptoMedioY])
+    puntosTrazada.append([msg.ptoMedioX, msg.ptoMedioY])
 
 # Esta función dibuja los conos y la trazada
 def dibujarTrazada(pantalla):
@@ -83,7 +83,7 @@ def dibujarTrazada(pantalla):
         puntosTransformados= []
         for p in puntosTrazada:
             puntosTransformados.append(transformar(p[0],p[1]))
-        pygame.draw.lines(pantalla,(255,255,255),False,puntosTransformados,2)
+        pygame.draw.lines(pantalla,(255,255,255),True,puntosTransformados,2)
 
 # Esto inicia el programa y hace que ni entre en deadlocks ni haga esperar al resto de programas
 async def iniciar():

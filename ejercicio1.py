@@ -21,25 +21,23 @@ class NodeState(Struct):
     x: float= 0.0
     y: float= 0.0
 
-# Creo una función que abre el csv acceleration y va procesando línea a línea los datos, para irlos
+# Creo una función que abre el csv seleccionado y va procesando línea a línea los datos, para irlos
 # mandando por el topic llamado "datosConos". Podría añadir el @timer como dice el enunciado, pero como
-# el csv es estático, lo dejo así
+# los csv son estáticos, lo dejo así
 
 async def leerEnviarCsv():
-    
-    while True:
-        try:
-            await publish("comprobacion", NodeState(nombre="test"))
-            break
-        except AttributeError:
-            await asyncio.sleep(0.5)
 
-    with open("csv/acceleration.csv", mode="r", encoding="utf-8") as csv:
+    #Esta pausa es para que no entre en deadlock
+    await asyncio.sleep(1)
+    csvElegido= input("Escribe el nombre del csv que quieres procesar (con la extensión): ")
+
+    with open(f"csv/{csvElegido}", mode="r", encoding="utf-8") as csv:
         for linea in csv:
             linea= linea.strip()
             linea= linea.split(",")
-            datosAEnviar= NodeState(nombre= linea[0], x= float(linea[1]), y= float(linea[2]))
-            await publish("datosConos", datosAEnviar)
+            if(len(linea)>2 and linea[0]!="tag" and linea[1]!="x" and linea[2]!="y"):
+                datosAEnviar= NodeState(nombre= linea[0], x= float(linea[1]), y= float(linea[2]))
+                await publish("datosConos", datosAEnviar)
         datosAEnviar= NodeState(nombre= "FIN", x= 0, y= 0)
         await publish("datosConos", datosAEnviar)
 
