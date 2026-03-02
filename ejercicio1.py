@@ -2,6 +2,13 @@ from msgspec import Struct
 from starting_pack import encoder, subscribe, timer, publish, start
 import asyncio
 
+
+# Para que funcione, debes ejecutar en terminales distintas en el siguiente orden:
+# ejercicio3.py
+# ejercicio2.py
+# ejercicio1.py
+
+
 # Creo la clase cono para manejar los datos del csv acceleration
 class Cono(Struct):
     nombre: str
@@ -33,13 +40,18 @@ async def leerEnviarCsv():
             linea= linea.split(",")
             datosAEnviar= NodeState(nombre= linea[0], x= float(linea[1]), y= float(linea[2]))
             await publish("datosConos", datosAEnviar)
-            print("Enviando...")
         datosAEnviar= NodeState(nombre= "FIN", x= 0, y= 0)
         await publish("datosConos", datosAEnviar)
 
+# Esto lo pongo para evitar un posible deadlock
 async def iniciar():
     asyncio.create_task(leerEnviarCsv())
     await start()
 
 if __name__ == "__main__":
     asyncio.run(iniciar())
+
+# Para que funcione, debes ejecutar en terminales distintas en el siguiente orden:
+# ejercicio3.py
+# ejercicio2.py
+# ejercicio1.py
